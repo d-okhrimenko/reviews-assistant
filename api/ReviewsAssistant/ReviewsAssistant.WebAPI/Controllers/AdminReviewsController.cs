@@ -24,10 +24,40 @@ public sealed class AdminReviewsController(IReviewService reviewService) : Contr
     }
 
     [HttpPost("{id:guid}/analyze")]
-    public IActionResult Analyze(Guid id) => StatusCode(StatusCodes.Status501NotImplemented,
-        new { message = "AI-інтеграцію буде підключено пізніше." });
+    public async Task<ActionResult<ReviewDto>> Analyze(Guid id, CancellationToken cancellationToken)
+    {
+        try
+        {
+            var review = await reviewService.AnalyzeAsync(id, cancellationToken);
+            return review is null ? NotFound() : Ok(review);
+        }
+        catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+        {
+            throw;
+        }
+        catch
+        {
+            return StatusCode(StatusCodes.Status502BadGateway,
+                new { message = "Не вдалося виконати AI-аналіз відгуку." });
+        }
+    }
 
     [HttpPost("{id:guid}/draft-response")]
-    public IActionResult DraftResponse(Guid id) => StatusCode(StatusCodes.Status501NotImplemented,
-        new { message = "AI-інтеграцію буде підключено пізніше." });
+    public async Task<ActionResult<ReviewDto>> DraftResponse(Guid id, CancellationToken cancellationToken)
+    {
+        try
+        {
+            var review = await reviewService.GenerateDraftResponseAsync(id, cancellationToken);
+            return review is null ? NotFound() : Ok(review);
+        }
+        catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+        {
+            throw;
+        }
+        catch
+        {
+            return StatusCode(StatusCodes.Status502BadGateway,
+                new { message = "Не вдалося згенерувати чернетку відповіді." });
+        }
+    }
 }

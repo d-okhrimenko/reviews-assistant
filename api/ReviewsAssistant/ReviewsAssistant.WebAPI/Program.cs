@@ -2,7 +2,9 @@ using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using ReviewsAssistant.Application.Ai.Services;
 using ReviewsAssistant.Application.Reviews;
+using ReviewsAssistant.Infrastructure.Ai;
 using ReviewsAssistant.Infrastructure.Data;
 using ReviewsAssistant.Infrastructure.Reviews;
 
@@ -14,6 +16,20 @@ var signingKey = jwtSettings["SigningKey"] ?? throw new InvalidOperationExceptio
 
 builder.Services.AddDbContext<ReviewsDbContext>(options => options.UseNpgsql(connectionString));
 builder.Services.AddScoped<IReviewService, ReviewService>();
+
+var aiProvider = builder.Configuration["Ai:Provider"]
+    ?? throw new InvalidOperationException("AI provider is required.");
+
+if (string.Equals(aiProvider, "Stub", StringComparison.OrdinalIgnoreCase))
+{
+    builder.Services.AddScoped<IAiReviewAnalyzer, StubAiReviewAnalyzer>();
+    builder.Services.AddScoped<IAiResponseGenerator, StubAiResponseGenerator>();
+}
+else
+{
+    throw new InvalidOperationException($"Unknown AI provider '{aiProvider}'.");
+}
+
 builder.Services.AddControllers();
 builder.Services.AddSwaggerGen();
 builder.Services.AddCors(options => options.AddDefaultPolicy(policy => policy

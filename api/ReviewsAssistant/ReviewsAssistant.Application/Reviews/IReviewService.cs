@@ -11,4 +11,8 @@ public interface IReviewService
     Task<IReadOnlyList<ReviewDto>> GetAllAsync(ReviewQuery query, CancellationToken cancellationToken);
 
     Task<ReviewDto?> GetByIdAsync(Guid id, CancellationToken cancellationToken);
+
+    Task<ReviewDto?> AnalyzeAsync(Guid id, CancellationToken cancellationToken);
+
+    Task<ReviewDto?> GenerateDraftResponseAsync(Guid id, CancellationToken cancellationToken);
 }
