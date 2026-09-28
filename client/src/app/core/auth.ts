@@ -3,8 +3,8 @@ import { Injectable, inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
 import { tap } from 'rxjs';
 import { environment } from '../../environments/environment';
-import { LoginRequest } from './models/login-request.model';
-import { LoginResponse } from './models/login-response.model';
+import { LoginRequest } from './models/auth/login-request.model';
+import { LoginResponse } from './models/auth/login-response.model';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {

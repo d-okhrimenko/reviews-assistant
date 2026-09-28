@@ -1,8 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { environment } from '../../environments/environment';
-import { CreateReviewRequest } from './models/create-review-request.model';
-import { Review } from './models/review.model';
+import { CreateReviewRequest } from './models/review/create-review-request.model';
+import { Review } from './models/review/review.model';
 
 @Injectable({ providedIn: 'root' })
 export class ReviewsApi {

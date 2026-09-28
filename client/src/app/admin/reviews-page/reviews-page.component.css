@@ -51,3 +51,16 @@ td:nth-child(2) {
   font-size: 12px;
   font-weight: 500;
 }
+.tag--positive {
+  background: #e6f4ea;
+  color: #137333;
+}
+.tag--negative,
+.tag--critical {
+  background: #fce8e6;
+  color: #c5221f;
+}
+.tag--priority {
+  background: #e8f0fe;
+  color: #174ea6;
+}

@@ -5,29 +5,29 @@
     >Статус
     <select (change)="filter('status', $event)">
       <option value="">Усі</option>
-      <option>Pending</option>
-      <option>Processing</option>
-      <option>Completed</option>
-      <option>Failed</option>
+      <option value="Pending">Очікує аналізу</option>
+      <option value="Processing">Аналізується</option>
+      <option value="Completed">Проаналізовано</option>
+      <option value="Failed">Помилка аналізу</option>
     </select></label
   >
   <label
     >Тональність
     <select (change)="filter('sentiment', $event)">
       <option value="">Усі</option>
-      <option>Positive</option>
-      <option>Neutral</option>
-      <option>Negative</option>
+      <option value="Positive">Позитивна</option>
+      <option value="Neutral">Нейтральна</option>
+      <option value="Negative">Негативна</option>
     </select></label
   >
   <label
     >Пріоритет
     <select (change)="filter('priority', $event)">
       <option value="">Усі</option>
-      <option>Low</option>
-      <option>Medium</option>
-      <option>High</option>
-      <option>Critical</option>
+      <option value="Low">Низький</option>
+      <option value="Medium">Середній</option>
+      <option value="High">Високий</option>
+      <option value="Critical">Критичний</option>
     </select></label
   >
   <button type="button" (click)="sortByPriority()">Сортувати за пріоритетом</button>
@@ -61,14 +61,14 @@
           </td>
           <td [title]="review.text">{{ reviewPreview(review.text) }}</td>
           <td>{{ review.createdAtUtc | date: 'short' }}</td>
-          <td>{{ review.analysisStatus }}</td>
+          <td>{{ analysisStatusLabel(review.analysisStatus) }}</td>
           <td>
-            <span class="tag">{{ review.sentiment ?? '—' }}</span>
+            <span [class]="sentimentBadgeClass(review.sentiment)">{{ sentimentLabel(review.sentiment) }}</span>
           </td>
           <td>
-            <span class="tag">{{ review.priority ?? '—' }}</span>
+            <span [class]="priorityBadgeClass(review.priority)">{{ priorityLabel(review.priority) }}</span>
           </td>
-          <td>{{ review.category ?? '—' }}</td>
+          <td>{{ categoryLabel(review.category) }}</td>
         </tr>
       }
     </tbody>

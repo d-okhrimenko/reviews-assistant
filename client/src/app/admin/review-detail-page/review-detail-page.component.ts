@@ -1,6 +1,6 @@
 import { Component, inject, signal } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { Review } from '../../core/models/review.model';
+import { Review } from '../../core/models/review/review.model';
 import { ReviewsApi } from '../../core/reviews';
 
 @Component({
