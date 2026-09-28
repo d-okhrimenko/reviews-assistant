@@ -6,13 +6,13 @@
   <blockquote>{{ item.text }}</blockquote>
   <dl>
     <dt>Статус</dt>
-    <dd>{{ item.analysisStatus }}</dd>
+    <dd>{{ analysisStatusLabel(item.analysisStatus) }}</dd>
     <dt>Тональність</dt>
-    <dd>{{ item.sentiment ?? '—' }}</dd>
+    <dd><span [class]="sentimentBadgeClass(item.sentiment)">{{ sentimentLabel(item.sentiment) }}</span></dd>
     <dt>Пріоритет</dt>
-    <dd>{{ item.priority ?? '—' }}</dd>
+    <dd><span [class]="priorityBadgeClass(item.priority)">{{ priorityLabel(item.priority) }}</span></dd>
     <dt>Категорія</dt>
-    <dd>{{ item.category ?? '—' }}</dd>
+    <dd>{{ categoryLabel(item.category) }}</dd>
     <dt>Потрібна термінова реакція</dt>
     <dd>
       {{ item.needsUrgentResponse === undefined ? '—' : item.needsUrgentResponse ? 'Так' : 'Ні' }}

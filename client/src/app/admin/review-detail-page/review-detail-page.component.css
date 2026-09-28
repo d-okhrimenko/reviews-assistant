@@ -26,3 +26,26 @@ section p {
   color: #5f6368;
   line-height: 1.5;
 }
+
+.tag {
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: 12px;
+  background: #e8f0fe;
+  color: #174ea6;
+  font-size: 12px;
+  font-weight: 500;
+}
+.tag--positive {
+  background: #e6f4ea;
+  color: #137333;
+}
+.tag--negative,
+.tag--critical {
+  background: #fce8e6;
+  color: #c5221f;
+}
+.tag--priority {
+  background: #e8f0fe;
+  color: #174ea6;
+}
