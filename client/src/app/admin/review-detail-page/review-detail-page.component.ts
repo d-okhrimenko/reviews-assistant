@@ -1,6 +1,16 @@
 import { Component, inject, signal } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
+import {
+  analysisStatusLabels,
+  categoryLabels,
+  priorityLabels,
+  sentimentLabels,
+} from '../../core/localization/review-labels';
+import { AnalysisStatus } from '../../core/models/review/analysis-status.model';
+import { Priority } from '../../core/models/review/priority.model';
 import { Review } from '../../core/models/review/review.model';
+import { ReviewCategory } from '../../core/models/review/review-category.model';
+import { Sentiment } from '../../core/models/review/sentiment.model';
 import { ReviewsApi } from '../../core/reviews';
 
 @Component({
@@ -64,5 +74,29 @@ export class ReviewDetailPage {
         this.isGeneratingResponse.set(false);
       },
     });
+  }
+
+  analysisStatusLabel(status: AnalysisStatus): string {
+    return analysisStatusLabels[status];
+  }
+
+  sentimentLabel(sentiment: Sentiment | null | undefined): string {
+    return sentiment === null || sentiment === undefined ? '—' : sentimentLabels[sentiment];
+  }
+
+  priorityLabel(priority: Priority | null | undefined): string {
+    return priority === null || priority === undefined ? '—' : priorityLabels[priority];
+  }
+
+  categoryLabel(category: ReviewCategory | null | undefined): string {
+    return category === null || category === undefined ? '—' : categoryLabels[category];
+  }
+
+  sentimentBadgeClass(sentiment: Sentiment | null | undefined): string {
+    return sentiment === 2 ? 'tag tag--negative' : sentiment === 0 ? 'tag tag--positive' : 'tag';
+  }
+
+  priorityBadgeClass(priority: Priority | null | undefined): string {
+    return priority === 3 ? 'tag tag--critical' : priority === null || priority === undefined ? 'tag' : 'tag tag--priority';
   }
 }
