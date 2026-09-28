@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ReviewsAssistant.Application.Reviews;
+using ReviewsAssistant.Application.Reviews.Contracts;
 using ReviewsAssistant.Core.Reviews;
 
 namespace ReviewsAssistant.WebAPI.Controllers;
