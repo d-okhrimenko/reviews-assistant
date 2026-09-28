@@ -10,5 +10,4 @@
 
 # Local configuration and secrets
 .env
-.env.*
-api/ReviewsAssistant/ReviewsAssistant.WebAPI/appsettings.json
+.env.*	
