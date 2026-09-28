@@ -1,4 +1,6 @@
 using Microsoft.EntityFrameworkCore;
+using ReviewsAssistant.Application.Ai.Contracts;
+using ReviewsAssistant.Application.Ai.Services;
 using ReviewsAssistant.Application.Reviews;
 using ReviewsAssistant.Application.Reviews.Contracts;
 using ReviewsAssistant.Core.Reviews;
@@ -6,7 +8,10 @@ using ReviewsAssistant.Infrastructure.Data;
 
 namespace ReviewsAssistant.Infrastructure.Reviews;
 
-public sealed class ReviewService(ReviewsDbContext dbContext) : IReviewService
+public sealed class ReviewService(
+    ReviewsDbContext dbContext,
+    IAiReviewAnalyzer aiReviewAnalyzer,
+    IAiResponseGenerator aiResponseGenerator) : IReviewService
 {
     public async Task<ReviewDto> CreateAsync(CreateReviewRequest request, CancellationToken cancellationToken)
     {
@@ -72,6 +77,64 @@ public sealed class ReviewService(ReviewsDbContext dbContext) : IReviewService
             .Where(item => item.Id == id)
             .Select(item => Map(item))
             .SingleOrDefaultAsync(cancellationToken);
+    }
+
+    public async Task<ReviewDto?> AnalyzeAsync(Guid id, CancellationToken cancellationToken)
+    {
+        var review = await dbContext.Reviews.SingleOrDefaultAsync(item => item.Id == id, cancellationToken);
+        if (review is null)
+        {
+            return null;
+        }
+
+        review.AnalysisStatus = AnalysisStatus.Processing;
+        await dbContext.SaveChangesAsync(cancellationToken);
+
+        try
+        {
+            var analysis = await aiReviewAnalyzer.AnalyzeAsync(
+                new AiReviewAnalysisRequest(review.Text),
+                cancellationToken);
+
+            review.Sentiment = analysis.Sentiment;
+            review.Priority = analysis.Priority;
+            review.Category = analysis.Category;
+            review.NeedsUrgentResponse = analysis.NeedsUrgentResponse;
+            review.Summary = analysis.Summary;
+            review.AnalyzedAtUtc = DateTime.UtcNow;
+            review.AnalysisStatus = AnalysisStatus.Completed;
+            await dbContext.SaveChangesAsync(cancellationToken);
+
+            return Map(review);
+        }
+        catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+        {
+            throw;
+        }
+        catch
+        {
+            review.AnalysisStatus = AnalysisStatus.Failed;
+            await dbContext.SaveChangesAsync(CancellationToken.None);
+            throw;
+        }
+    }
+
+    public async Task<ReviewDto?> GenerateDraftResponseAsync(Guid id, CancellationToken cancellationToken)
+    {
+        var review = await dbContext.Reviews.SingleOrDefaultAsync(item => item.Id == id, cancellationToken);
+        if (review is null)
+        {
+            return null;
+        }
+
+        var response = await aiResponseGenerator.GenerateAsync(
+            new AiResponseGenerationRequest(review.AuthorName, review.Text),
+            cancellationToken);
+
+        review.AiDraftResponse = response.DraftResponse;
+        await dbContext.SaveChangesAsync(cancellationToken);
+
+        return Map(review);
     }
 
     private static ReviewDto Map(Review item) => new(

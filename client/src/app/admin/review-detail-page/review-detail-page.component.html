@@ -17,12 +17,27 @@
     <dd>
       {{ item.needsUrgentResponse === undefined ? '—' : item.needsUrgentResponse ? 'Так' : 'Ні' }}
     </dd>
+    <dt>Підсумок</dt>
+    <dd>{{ item.summary ?? '—' }}</dd>
   </dl>
+  <section aria-labelledby="analysis-heading">
+    <h2 id="analysis-heading">AI-аналіз</h2>
+    <button type="button" (click)="analyze()" [disabled]="isAnalyzing()">
+      {{ isAnalyzing() ? 'Аналізуємо…' : 'Проаналізувати' }}
+    </button>
+    @if (analysisError()) {
+      <p role="alert">{{ analysisError() }}</p>
+    }
+  </section>
   <section>
     <h2>Чернетка відповіді клієнту</h2>
-    <p>{{ item.aiDraftResponse ?? 'AI-інтеграцію буде підключено пізніше.' }}</p>
-    <button disabled aria-describedby="ai-note">Згенерувати відповідь</button>
-    <p id="ai-note">AI-інтеграцію буде підключено пізніше.</p>
+    <p>{{ item.aiDraftResponse ?? 'Чернетку ще не згенеровано.' }}</p>
+    <button type="button" (click)="generateDraftResponse()" [disabled]="isGeneratingResponse()">
+      {{ isGeneratingResponse() ? 'Генеруємо…' : 'Згенерувати відповідь' }}
+    </button>
+    @if (responseError()) {
+      <p role="alert">{{ responseError() }}</p>
+    }
   </section>
 } @else if (error()) {
   <p role="alert">{{ error() }}</p>
