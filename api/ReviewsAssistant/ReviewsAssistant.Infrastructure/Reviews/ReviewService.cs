@@ -132,6 +132,8 @@ public sealed class ReviewService(
             cancellationToken);
 
         review.AiDraftResponse = response.DraftResponse;
+        review.AiDraftResponseProvider = response.Provider.Provider;
+        review.AiDraftResponseModel = response.Provider.Model;
         await dbContext.SaveChangesAsync(cancellationToken);
 
         return Map(review);
@@ -150,5 +152,7 @@ public sealed class ReviewService(
         item.NeedsUrgentResponse,
         item.Summary,
         item.AiDraftResponse,
+        item.AiDraftResponseProvider,
+        item.AiDraftResponseModel,
         item.AnalyzedAtUtc);
 }

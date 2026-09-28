@@ -32,6 +32,14 @@ namespace ReviewsAssistant.Infrastructure.Data.Migrations
                         .HasMaxLength(4000)
                         .HasColumnType("character varying(4000)");
 
+                    b.Property<string>("AiDraftResponseModel")
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.Property<string>("AiDraftResponseProvider")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
                     b.Property<int>("AnalysisStatus")
                         .HasColumnType("integer");
 

@@ -19,4 +19,8 @@
     <ProjectReference Include="..\ReviewsAssistant.Infrastructure\ReviewsAssistant.Infrastructure.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="Prompts\openai-response-generation.md" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
+  </ItemGroup>
+
 </Project>

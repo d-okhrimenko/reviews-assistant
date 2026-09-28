@@ -1,4 +1,5 @@
 using System.Text;
+using System.Net.Http.Headers;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -24,6 +25,23 @@ if (string.Equals(aiProvider, "Stub", StringComparison.OrdinalIgnoreCase))
 {
     builder.Services.AddScoped<IAiReviewAnalyzer, StubAiReviewAnalyzer>();
     builder.Services.AddScoped<IAiResponseGenerator, StubAiResponseGenerator>();
+}
+else if (string.Equals(aiProvider, "OpenAI", StringComparison.OrdinalIgnoreCase))
+{
+    var openAiOptions = builder.Configuration.GetSection(OpenAiOptions.SectionName).Get<OpenAiOptions>()
+        ?? throw new InvalidOperationException("OpenAI settings are required.");
+    if (string.IsNullOrWhiteSpace(openAiOptions.ApiKey) || string.IsNullOrWhiteSpace(openAiOptions.Model))
+    {
+        throw new InvalidOperationException("OpenAI API key and model are required.");
+    }
+
+    builder.Services.Configure<OpenAiOptions>(builder.Configuration.GetSection(OpenAiOptions.SectionName));
+    builder.Services.AddScoped<IAiReviewAnalyzer, StubAiReviewAnalyzer>();
+    builder.Services.AddHttpClient<IAiResponseGenerator, OpenAiResponseGenerator>(client =>
+    {
+        client.BaseAddress = new Uri("https://api.openai.com/v1/");
+        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", openAiOptions.ApiKey);
+    });
 }
 else
 {
