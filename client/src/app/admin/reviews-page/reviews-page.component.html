@@ -1,0 +1,76 @@
+<h1>Відгуки</h1>
+
+<div class="filters">
+  <label
+    >Статус
+    <select (change)="filter('status', $event)">
+      <option value="">Усі</option>
+      <option>Pending</option>
+      <option>Processing</option>
+      <option>Completed</option>
+      <option>Failed</option>
+    </select></label
+  >
+  <label
+    >Тональність
+    <select (change)="filter('sentiment', $event)">
+      <option value="">Усі</option>
+      <option>Positive</option>
+      <option>Neutral</option>
+      <option>Negative</option>
+    </select></label
+  >
+  <label
+    >Пріоритет
+    <select (change)="filter('priority', $event)">
+      <option value="">Усі</option>
+      <option>Low</option>
+      <option>Medium</option>
+      <option>High</option>
+      <option>Critical</option>
+    </select></label
+  >
+  <button type="button" (click)="sortByPriority()">Сортувати за пріоритетом</button>
+</div>
+
+@if (loading()) {
+  <p>Завантаження…</p>
+} @else if (error()) {
+  <p role="alert">{{ error() }}</p>
+} @else if (!reviews().length) {
+  <p>Відгуків поки немає.</p>
+} @else {
+  <table>
+    <thead>
+      <tr>
+        <th>Автор</th>
+        <th>Текст</th>
+        <th>Дата</th>
+        <th>Статус</th>
+        <th>Тональність</th>
+        <th>Пріоритет</th>
+        <th>Категорія</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (review of reviews(); track review.id) {
+        <tr>
+          <td>
+            <a [routerLink]="['/admin/reviews', review.id]">{{ review.authorName }}</a
+            ><br /><small>{{ review.email }}</small>
+          </td>
+          <td [title]="review.text">{{ reviewPreview(review.text) }}</td>
+          <td>{{ review.createdAtUtc | date: 'short' }}</td>
+          <td>{{ review.analysisStatus }}</td>
+          <td>
+            <span class="tag">{{ review.sentiment ?? '—' }}</span>
+          </td>
+          <td>
+            <span class="tag">{{ review.priority ?? '—' }}</span>
+          </td>
+          <td>{{ review.category ?? '—' }}</td>
+        </tr>
+      }
+    </tbody>
+  </table>
+}
