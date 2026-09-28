@@ -7,4 +7,5 @@ public sealed class OpenAiOptions
     public string ApiKey { get; init; } = string.Empty;
     public string Model { get; init; } = string.Empty;
     public string InstructionsFilePath { get; init; } = "Prompts/openai-response-generation.md";
+    public string ReviewAnalysisInstructionsFilePath { get; init; } = "Prompts/openai-review-analysis.md";
 }

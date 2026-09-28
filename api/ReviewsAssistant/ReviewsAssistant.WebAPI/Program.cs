@@ -36,7 +36,11 @@ else if (string.Equals(aiProvider, "OpenAI", StringComparison.OrdinalIgnoreCase)
     }
 
     builder.Services.Configure<OpenAiOptions>(builder.Configuration.GetSection(OpenAiOptions.SectionName));
-    builder.Services.AddScoped<IAiReviewAnalyzer, StubAiReviewAnalyzer>();
+    builder.Services.AddHttpClient<IAiReviewAnalyzer, OpenAiReviewAnalyzer>(client =>
+    {
+        client.BaseAddress = new Uri("https://api.openai.com/v1/");
+        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", openAiOptions.ApiKey);
+    });
     builder.Services.AddHttpClient<IAiResponseGenerator, OpenAiResponseGenerator>(client =>
     {
         client.BaseAddress = new Uri("https://api.openai.com/v1/");
